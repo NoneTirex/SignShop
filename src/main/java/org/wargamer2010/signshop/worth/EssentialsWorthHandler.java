@@ -1,6 +1,5 @@
 package org.wargamer2010.signshop.worth;
 
-
 import com.earth2me.essentials.IEssentials;
 import com.earth2me.essentials.Worth;
 import org.bukkit.Bukkit;
@@ -19,7 +18,6 @@ public class EssentialsWorthHandler implements WorthHandler {
 
     @Override
     public double getPrice(ItemStack stack) {
-
         BigDecimal worthPrice = worth.getPrice(ess, stack);
         return (worthPrice == null ? 0 : worthPrice.doubleValue());
     }

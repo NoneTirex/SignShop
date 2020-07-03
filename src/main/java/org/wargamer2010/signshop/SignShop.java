@@ -26,11 +26,9 @@ import org.wargamer2010.signshop.listeners.SignShopServerListener;
 import org.wargamer2010.signshop.listeners.sslisteners.*;
 import org.wargamer2010.signshop.money.MoneyModifierManager;
 import org.wargamer2010.signshop.player.PlayerMetadata;
-import org.wargamer2010.signshop.timing.TimeManager;
 import org.wargamer2010.signshop.util.DataConverter;
 import org.wargamer2010.signshop.util.SSTimeUtil;
 import org.wargamer2010.signshop.util.commandUtil;
-import org.wargamer2010.signshop.worth.CMIWorthHandler;
 import org.wargamer2010.signshop.worth.EssentialsWorthHandler;
 import org.wargamer2010.signshop.worth.WorthHandler;
 
@@ -49,7 +47,6 @@ public class SignShop extends JavaPlugin {
     private static SignShop instance;
     //Statics
     private static Storage store;
-    private static TimeManager manager = null;
     //Permissions
     private static boolean USE_PERMISSIONS = false;
     // Commands
@@ -90,10 +87,6 @@ public class SignShop extends JavaPlugin {
 
     public static boolean usePermissions() {
         return USE_PERMISSIONS;
-    }
-
-    public static TimeManager getTimeManager() {
-        return manager;
     }
 
     public static CommandDispatcher getCommandDispatcher() {
@@ -146,7 +139,6 @@ public class SignShop extends JavaPlugin {
 
         //Create a storage locker for shops
         store = Storage.init(new File(this.getDataFolder(), "sellers.yml"));
-        manager = new TimeManager(new File(this.getDataFolder(), "timing.yml"));
 
         if (SignShopConfig.getTransactionLog()) {
             try {
@@ -184,12 +176,7 @@ public class SignShop extends JavaPlugin {
             log("Vault was not found.", Level.WARNING);
             disableSignShop();
         }
-        //Setup worth
-        if (Bukkit.getServer().getPluginManager().getPlugin("CMI") != null) {
-            worthHandler = new CMIWorthHandler();
-            log("Using worth information from CMI.", Level.INFO);
-        }
-        else if (Bukkit.getServer().getPluginManager().getPlugin("Essentials") != null) {
+        if (Bukkit.getServer().getPluginManager().getPlugin("Essentials") != null) {
             worthHandler = new EssentialsWorthHandler();
             log("Using worth information from Essentials.", Level.INFO);
         }
@@ -228,8 +215,6 @@ public class SignShop extends JavaPlugin {
         if (store != null)
             store.Save();
         Storage.dispose();
-        if (manager != null)
-            manager.stop();
         log("Disabled", Level.INFO);
     }
 
@@ -275,17 +260,12 @@ public class SignShop extends JavaPlugin {
         pm.registerEvents(new GetPriceFromWorth(), this);
         pm.registerEvents(new ShopCooldown(), this);
         pm.registerEvents(new StockChecker(), this);
-        pm.registerEvents(new TimedCommandListener(), this);
         pm.registerEvents(new MoneyModifierListener(), this);
 
-        DynmapManager dmm = new DynmapManager();
-        if (SignShopConfig.getEnableDynmapSupport())
-            pm.registerEvents(dmm, this);
         if (SignShopConfig.getEnableShopPlotSupport()) {
             if (this.getServer().getPluginManager().isPluginEnabled("WorldGuard")) {
                 pm.registerEvents(new WorldGuardChecker(), this);
             }
-            pm.registerEvents(new TownyChecker(), this);
         }
 
         // Money Transactions Types

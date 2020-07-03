@@ -8,7 +8,6 @@ import org.wargamer2010.signshop.Seller;
 import org.wargamer2010.signshop.configuration.Storage;
 import org.wargamer2010.signshop.operations.SignShopArguments;
 import org.wargamer2010.signshop.player.SignShopPlayer;
-import org.wargamer2010.signshop.timing.IExpirable;
 
 public class SSEventFactory {
 
@@ -68,10 +67,6 @@ public class SSEventFactory {
 
     public static SSLinkEvent generateLinkEvent(Block pSign, SignShopPlayer pPlayer, Seller pShop) {
         return new SSLinkEvent(pSign, pPlayer, pShop);
-    }
-
-    public static SSExpiredEvent generateExpiredEvent(IExpirable pExpirable) {
-        return new SSExpiredEvent(pExpirable);
     }
 
     public static SSMoneyTransactionEvent generateMoneyEvent(SignShopArguments ssArgs, SSMoneyEventType type, SSMoneyRequestType pRequestType) {
